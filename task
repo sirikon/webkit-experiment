@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+DEPS="gtk+-3.0 webkit2gtk-4.0"
+BINARY_NAME="webkit-experiment"
+
+function build {(
+    mkdir -p ./out
+    gcc \
+        `pkg-config --cflags ${DEPS}` \
+        -o ./out/${BINARY_NAME} main.c \
+        `pkg-config --libs ${DEPS}`
+)}
+
+function run {(
+    build
+    cd ./test-content
+    ../out/${BINARY_NAME}
+)}
+
+function help {(
+  echo "Available commands:"
+  for fn in $(compgen -A function); do echo "  ${fn}"; done
+)}
+
+set -e
+cd "$(dirname "${BASH_SOURCE[0]}")"
+[ -z "$1" ] && help && exit 0
+"$1" ${@:2}
